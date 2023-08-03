@@ -143,27 +143,31 @@ emailBtn.addEventListener("click", () => {
     emailFormContainer.style.display = 'flex'
 });
 
-emailForm.addEventListener("submit", (e) => {
-    e.preventDefault(); // stop submission
+fetch('/api/config')
+  .then((res) => res.json())
+  .then((config) => {
+    emailForm.addEventListener("submit", (e) => {
+      e.preventDefault(); // stop submission
 
-    emailSendBtn.setAttribute("disabled", "disabled");
-    emailSendBtn.innerHTML = "<span>Sending..</span>";
+      emailSendBtn.setAttribute("disabled", "disabled");
+      emailSendBtn.innerHTML = "<span>Sending..</span>";
 
-    const url = fileURL.value;
+      const url = fileURL.value;
 
-    const formData = {
-        uuid: url.split("/").splice(-1, 1)[0],
-        recipient: emailForm.elements["emailTo"].value,
-        sender: emailForm.elements["emailFrom"].value,
-    };
+      const formData = {
+          uuid: url.split("/").splice(-1, 1)[0],
+          recipient: emailForm.elements["emailTo"].value,
+          sender: emailForm.elements["emailFrom"].value,
+      };
 
-    fetch(`${process.env.APP_BASE_URL}/api/files/send`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-    })
+      // Using the config.appBaseUrl from the configuration
+      fetch(`${config.appBaseUrl}/api/files/send`, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+      })
         .then((res) => res.json())
         .then((data) => {
             if (data.success) {
@@ -176,12 +180,18 @@ emailForm.addEventListener("submit", (e) => {
                 emailSendBtn.innerHTML = "<span>Retry</span>";
                 emailSendBtn.removeAttribute("disabled");
             }
-        }).catch(() => {
+        })
+        .catch(() => {
             showToast("Something went wrong");
             emailSendBtn.innerHTML = "<span>Send</span>";
             emailSendBtn.removeAttribute("disabled");
-        })
-});
+        });
+    });
+  })
+  .catch((error) => {
+    console.error('Error fetching configuration:', error);
+  });
+
 
 
 let toastTimer;

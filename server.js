@@ -9,6 +9,10 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
 
+app.get('/api/config', (req, res) => {
+    res.json({ appBaseUrl: process.env.APP_BASE_URL });
+  });
+
 const PORT = process.env.PORT || 5500;
 const uri = "mongodb+srv://charithma:V6NfAheQ59rLhw3T@cluster0.4nattzt.mongodb.net/eShare?retryWrites=true&w=majority";
 
