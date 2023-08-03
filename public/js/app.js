@@ -25,6 +25,7 @@ const cleanupBtn = document.querySelector("#cleanup-btn");
 
 const maxAllowedSize = 100 * 1024 * 1024; // 100MB
 
+
 window.addEventListener('DOMContentLoaded', (event) => {
     anims.forEach(el => el.classList.remove('fade-in'))
 });
@@ -156,7 +157,7 @@ emailForm.addEventListener("submit", (e) => {
         sender: emailForm.elements["emailFrom"].value,
     };
 
-    fetch('http://localhost:5500/api/files/send', {
+    fetch(`${process.env.APP_BASE_URL}/api/files/send`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
