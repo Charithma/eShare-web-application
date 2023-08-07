@@ -23,10 +23,12 @@ const options = {
     keepAlive: true
 };
 
+mongoose.set('strictQuery', false);
+
 mongoose
     .connect(uri, options)
     .then(() => {
-        console.log("Connected to the database!");
+        console.log("Connected to the database!"); // Remove when doing unit testing
     })
     .catch((error) => console.log("Error connecting to the database: " + error));
 
@@ -40,3 +42,4 @@ app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}.`);
 });
 
+module.exports = app;
