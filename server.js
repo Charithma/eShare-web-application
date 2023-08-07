@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const mongoose = require("mongoose");
+const WebSocket = require("ws");
 const app = express();
 const path = require("path");
 
@@ -28,7 +29,7 @@ mongoose.set('strictQuery', false);
 mongoose
     .connect(uri, options)
     .then(() => {
-        console.log("Connected to the database!"); // Remove when doing unit testing
+        // console.log("Connected to the database!"); // Remove when doing unit testing
     })
     .catch((error) => console.log("Error connecting to the database: " + error));
 
