@@ -20,8 +20,9 @@ const emailForm = document.getElementById("mailForm");
 const emailSendBtn = document.getElementById("emailSendBtn");
 const goBackBtn = document.getElementById("goBackBtn");
 const toast = document.querySelector(".toast");
-
 const cleanupBtn = document.querySelector("#cleanup-btn");
+
+
 
 const maxAllowedSize = 100 * 1024 * 1024; // 100MB
 
@@ -127,12 +128,17 @@ const onFileUploadSuccess = (res) => {
     setTimeout(() => {
         anims.forEach(el => el.classList.add('fade-in'));
     }, 300);
+
+    const socket = io();
+    socket.emit('uploadComplete');
 };
 
 copyURLBtn.addEventListener("click", () => {
     fileURL.select();
     document.execCommand("copy");
-    showToast("Download link copied to clipboard");
+
+    const socket = io();
+    socket.emit('linkCopied');
 });
 
 fileURL.addEventListener("click", () => {
@@ -171,18 +177,25 @@ fetch('/api/config')
         .then((res) => res.json())
         .then((data) => {
             if (data.success) {
-                showToast("Email successfully sent");
+                // showToast("Email successfully sent");
+                const socket = io();
+                socket.emit('emailSent');
+
                 document.getElementById('emailTo').value = '';
                 emailSendBtn.innerHTML = "<span>Send</span>";
                 emailSendBtn.removeAttribute("disabled");
             } else {
-                showToast("Something went wrong");
+                const socket = io();
+                socket.emit('errorOccurred');
+
                 emailSendBtn.innerHTML = "<span>Retry</span>";
                 emailSendBtn.removeAttribute("disabled");
             }
         })
         .catch(() => {
-            showToast("Something went wrong");
+            const socket = io();
+            socket.emit('errorOccurred');
+
             emailSendBtn.innerHTML = "<span>Send</span>";
             emailSendBtn.removeAttribute("disabled");
         });
